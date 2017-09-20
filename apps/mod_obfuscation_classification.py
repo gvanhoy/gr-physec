@@ -1,91 +1,96 @@
 from file_based_fam import file_based_fam
 from random_source_fam import random_source_fam
-import numpy as np
-from sklearn.preprocessing import normalize
+from random_fec_fam import random_fec_fam
+from sklearn.preprocessing import Normalizer
 from sklearn.svm import SVC
 from sklearn.decomposition import PCA
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
+import logging
+import numpy as np
 
-NUM_SAMPLES_PER_CLASS = 500
+
+NUM_SAMPLES_PER_SNR = 100
+SNR_RANGE = range(0, 30, 3)
 
 
 class Classifier:
     def __init__(self):
-        self.mod_obfuscator = file_based_fam()
-        self.normal_modulator = random_source_fam()
-        self.features = np.ndarray((2*NUM_SAMPLES_PER_CLASS, 2 * self.mod_obfuscator.specest_cyclo_fam_0.get_N()))
-        self.labels = np.zeros(2*NUM_SAMPLES_PER_CLASS, dtype=np.int32)
-        self.generate_mod_obfuscation_matrices()
-        self.generate_random_source_matrices()
+        self.logger = logging.getLogger()
+        self.logger.setLevel(logging.DEBUG)
+
+        self.classes = [file_based_fam(), random_source_fam(), random_fec_fam()]
+        self.accuracy = np.zeros(len(SNR_RANGE), dtype=np.float32)
+        self.features = np.ndarray((len(SNR_RANGE)*len(self.classes)*NUM_SAMPLES_PER_SNR, 2 * self.classes[0].specest_cyclo_fam_0.get_N()))
+        self.labels = np.zeros(len(SNR_RANGE)*len(self.classes)*NUM_SAMPLES_PER_SNR, dtype=np.int32)
+        self.clf = Pipeline([
+            ('normalizer', Normalizer(norm='max')),
+            ('PCA', PCA(n_components=25)),
+            ('SVM', SVC(kernel='linear', decision_function_shape='ovo'))
+        ])
+        self.generate_features()
         # self.compare_features()
-        self.classify()
+        # self.cross_validation()
+        self.pcc_v_snr()
 
-    def generate_mod_obfuscation_matrices(self):
-        self.mod_obfuscator.start()
-        for x in range(0, NUM_SAMPLES_PER_CLASS):
-            old_sample = np.max(np.abs(self.mod_obfuscator.specest_cyclo_fam_0.get_estimate()), axis=1)
-            new_sample = old_sample
-            while new_sample[0] == old_sample[0]:
-                new_sample = np.max(np.abs(self.mod_obfuscator.specest_cyclo_fam_0.get_estimate()), axis=1)
-            self.features[x, :] = new_sample
-            self.labels[x] = 0
+    def generate_features(self):
+        for snr_index, snr in enumerate(SNR_RANGE):
+            for tb_index, top_block in enumerate(self.classes):
+                top_block.set_snr_db(snr)
+                top_block.start()
+                logging.info("Generating features for tb:{0} snr: {1}".format(tb_index, snr))
+                for x in range(NUM_SAMPLES_PER_SNR):
+                    old_sample = np.max(np.abs(top_block.specest_cyclo_fam_0.get_estimate()), axis=1)
+                    new_sample = old_sample
+                    while new_sample[0] == old_sample[0]:
+                        new_sample = np.max(np.abs(top_block.specest_cyclo_fam_0.get_estimate()), axis=1)
+                    self.features[x + tb_index*NUM_SAMPLES_PER_SNR + snr_index*len(self.classes)*NUM_SAMPLES_PER_SNR, :] = new_sample
+                    self.labels[x + tb_index*NUM_SAMPLES_PER_SNR + snr_index*len(self.classes)*NUM_SAMPLES_PER_SNR] = tb_index
+                top_block.stop()
+        train_features, _, train_labels, _ = train_test_split(self.features, self.labels, test_size = 0.33, random_state = 42)
+        self.clf.fit(train_features, train_labels)
 
-        # plt.figure(1)
-        # plt.plot(self.features[0, :])
-        # plt.draw()
+    def pcc_v_snr(self):
+        for snr_index in range(len(SNR_RANGE)):
+            step = NUM_SAMPLES_PER_SNR*len(self.classes)
+            y_pred = self.clf.predict(self.features[snr_index*step:(snr_index + 1)*step, :])
+            self.accuracy[snr_index] = accuracy_score(self.labels[snr_index*step:(snr_index + 1)*step], y_pred)
+        plt.figure(1)
+        plt.plot(SNR_RANGE,
+                 100*self.accuracy,
+                 color='blue',
+                 linewidth=3.0,
+                 linestyle='--')
+        self.save_figure(1, 'Percent Correct Classification', 'pcc_v_snr')
 
-        self.mod_obfuscator.stop()
+    def cross_validation(self):
+        logging.info("Cross Validation Scores: " + str(cross_val_score(self.clf, self.train_features, self.train_labels)))
 
-    def generate_random_source_matrices(self):
-        self.normal_modulator.start()
-        for x in range(NUM_SAMPLES_PER_CLASS + 1, 2*NUM_SAMPLES_PER_CLASS):
-            old_sample = np.max(np.abs(self.normal_modulator.specest_cyclo_fam_0.get_estimate()), axis=1)
-            new_sample = old_sample
-            while new_sample[0] == old_sample[0]:
-                new_sample = np.max(np.abs(self.normal_modulator.specest_cyclo_fam_0.get_estimate()), axis=1)
-            self.features[x, :] = new_sample
-            self.labels[x] = 1
-
-        # plt.figure(2)
-        # plt.plot(self.features[NUM_SAMPLES_PER_CLASS + 1, :])
-        # plt.draw()
-
-        self.normal_modulator.stop()
-
-    def classify(self):
-        self.features = normalize(self.features, axis=1, norm='max')
-        pca = PCA(n_components=25)
-        pca.fit_transform(self.features, self.labels)
-        clf_alpha = SVC(kernel='linear', decision_function_shape='ovo')
-        # clf_alpha = AdaBoostClassifier(
-        #             base_estimator=None,
-        #             n_estimators=100,
-        #             learning_rate=.5,
-        #             algorithm='SAMME.R',
-        #             random_state=None)
-        print cross_val_score(clf_alpha, self.features, self.labels)
+    def save_figure(self, figure_number, figure_title, file_name):
+        plt.figure(figure_number)
+        plt.xlabel('SNR (dB)', fontsize=18)
+        plt.ylabel('Percent Correct Classification', fontsize=16)
+        plt.xlim((min(SNR_RANGE), max(SNR_RANGE)))
+        plt.ylim((0, 100))
+        plt.title(figure_title)
+        plt.grid(True)
+        # plt.show()
+        plt.savefig(file_name + '.eps', format='eps', dpi=1000)
+        plt.savefig(file_name + '.png', format='png', dpi=300)
+        plt.clf()
 
     def compare_features(self):
+        plt.figure(1)
         for x in range(NUM_SAMPLES_PER_CLASS):
-            plt.figure(1)
-            plt.subplot(121)
-            plt.plot(self.features[x, :])
-            plt.subplot(122)
-            plt.plot(self.features[x + NUM_SAMPLES_PER_CLASS, :])
+            for tb_index in range(1, len(self.classes) + 1):
+                plt.subplot(1, len(self.classes), tb_index)
+                plt.plot(self.features[x + NUM_SAMPLES_PER_CLASS*(tb_index - 1), :])
+                plt.grid()
             plt.show()
-
-    def calculate_error(self, vec_y, vec_y_hat):
-        num_errors = 0
-        for test_index in range(len(vec_y)):
-            if vec_y_hat[test_index] != vec_y[test_index]:
-                num_errors += 1.0
-        percent_error = 100*num_errors/float(len(vec_y))
-        print "Percent error: ", percent_error
 
 
 if __name__ == '__main__':
     main_class = Classifier()
-    main_class.generate_mod_obfuscation_matrices()
 

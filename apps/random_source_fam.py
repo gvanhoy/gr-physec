@@ -3,15 +3,19 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Random Source Fam
-# Generated: Thu Sep 14 19:11:22 2017
+# Generated: Mon Sep 18 03:30:58 2017
 ##################################################
 
 from gnuradio import analog
 from gnuradio import blocks
+from gnuradio import channels
 from gnuradio import digital
+from gnuradio import eng_notation
 from gnuradio import filter
 from gnuradio import gr
+from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
+from optparse import OptionParser
 import numpy
 import specest
 
@@ -24,8 +28,11 @@ class random_source_fam(gr.top_block):
         ##################################################
         # Variables
         ##################################################
+        self.snr_db = snr_db = 10
         self.samp_rate = samp_rate = 100000
+
         self.const = const = digital.constellation_16qam().base()
+
         self.P = P = 256
         self.Np = Np = 32
         self.L = L = 8
@@ -35,16 +42,24 @@ class random_source_fam(gr.top_block):
         ##################################################
         self.specest_cyclo_fam_0 = specest.cyclo_fam(Np, P, L)
         self.random = blocks.vector_source_b(map(int, numpy.random.randint(0, const.arity(), 10000)), True)
-        self.interp_fir_filter_xxx_0 = filter.interp_fir_filter_ccc(4, (firdes.low_pass_2(1, 1, 1 / 8.0, 1 / 16.0, 80)))
+        self.interp_fir_filter_xxx_0 = filter.interp_fir_filter_ccc(4, (firdes.low_pass_2(1, 1, 1/8.0, 1/16.0, 80)))
         self.interp_fir_filter_xxx_0.declare_sample_delay(0)
         self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_bc((const.points()), 1)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex * 1, samp_rate, True)
-        self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float * 1)
-        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float * 2 * Np)
+        self.channels_channel_model_0 = channels.channel_model(
+        	noise_voltage=10.0**(-snr_db/20.0),
+        	frequency_offset=0.0,
+        	epsilon=1.0,
+        	taps=(1.0, ),
+        	noise_seed=0,
+        	block_tags=False
+        )
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
+        self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
+        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*2*Np)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_complex_to_real_0 = blocks.complex_to_real(1)
-        self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, samp_rate / 4, 1, 0)
+        self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, samp_rate/4, 1, 0)
 
         ##################################################
         # Connections
@@ -54,11 +69,19 @@ class random_source_fam(gr.top_block):
         self.connect((self.blocks_float_to_complex_0, 0), (self.specest_cyclo_fam_0, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.blocks_null_source_0, 0), (self.blocks_float_to_complex_0, 1))
-        self.connect((self.blocks_throttle_0, 0), (self.blocks_complex_to_real_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.channels_channel_model_0, 0))
+        self.connect((self.channels_channel_model_0, 0), (self.blocks_complex_to_real_0, 0))
         self.connect((self.digital_chunks_to_symbols_xx_0, 0), (self.interp_fir_filter_xxx_0, 0))
         self.connect((self.interp_fir_filter_xxx_0, 0), (self.blocks_multiply_xx_0, 0))
         self.connect((self.random, 0), (self.digital_chunks_to_symbols_xx_0, 0))
         self.connect((self.specest_cyclo_fam_0, 0), (self.blocks_null_sink_0, 0))
+
+    def get_snr_db(self):
+        return self.snr_db
+
+    def set_snr_db(self, snr_db):
+        self.snr_db = snr_db
+        self.channels_channel_model_0.set_noise_voltage(10.0**(-self.snr_db/20.0))
 
     def get_samp_rate(self):
         return self.samp_rate
