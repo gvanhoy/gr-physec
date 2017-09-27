@@ -9,20 +9,18 @@
 from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import channels
-from gnuradio import eng_notation
 from gnuradio import filter
 from gnuradio import gr
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
 import numpy
 import pmt
 import specest
+import logging
 
 
 class file_based_fam(gr.top_block):
 
-    def __init__(self):
+    def __init__(self, filename=""):
         gr.top_block.__init__(self, "File Based Fam")
 
         ##################################################
@@ -31,8 +29,10 @@ class file_based_fam(gr.top_block):
         self.snr_db = snr_db = 10
         self.samp_rate = samp_rate = 100000
         self.P = P = 256
-        self.Np = Np = 32
-        self.L = L = 8
+        self.Np = Np = 16
+        self.L = L = self.Np/4
+        print "Approximate amount of points for SCD: {0}".format(self.P*self.Np/4)
+        self.filename = filename
 
         ##################################################
         # Blocks
@@ -48,12 +48,12 @@ class file_based_fam(gr.top_block):
         	noise_seed=0,
         	block_tags=False
         )
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate, True)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*2*Np)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
-        self.blocks_file_source_0_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/ece411/gr-physec/apps/sources/bpsk2qam16.bin', True)
+        self.blocks_file_source_0_0 = blocks.file_source(gr.sizeof_gr_complex*1, self.filename, True)
         self.blocks_file_source_0_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_complex_to_real_0 = blocks.complex_to_real(1)
         self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, samp_rate/4, 1, 0)

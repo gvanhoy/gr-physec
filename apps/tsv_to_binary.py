@@ -1,6 +1,6 @@
 import numpy as np
 
-FILE_NAME = 'bpsk2qam16'
+FILE_NAME = 'qam16'
 
 with open("sources/" + FILE_NAME + ".bin", "w") as output_file:
     with open("sources/" + FILE_NAME + ".txt", "r") as input_file:
