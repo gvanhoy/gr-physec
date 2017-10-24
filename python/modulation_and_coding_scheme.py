@@ -49,7 +49,6 @@ class modulation_and_coding_scheme(gr.top_block):
         self.samp_rate = 100000
         self.puncpat = '11'
         self.snr_db = 10
-        self.num_samples = num_samples
         self.enc_cc = enc_cc = fec.cc_encoder_make(2048, 7, 2, ([79, 109]), 0, fec.CC_STREAMING, False)
         self.const = digital.constellation_bpsk().base()
         self.get_constellation_from_string(modulation)
