@@ -37,7 +37,6 @@ class modulation_and_coding_scheme(gr.top_block):
                  P,
                  modulation,
                  code_rate,
-                 num_samples,
                  code_type="convolutional"
                  ):
         gr.top_block.__init__(self, "Modulation and Coding Scheme")
@@ -60,13 +59,13 @@ class modulation_and_coding_scheme(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.specest_cyclo_fam_0 = specest.cyclo_fam(Np, P, Np/4)
+        self.specest_cyclo_fam_0 = specest.cyclo_fam(self.Np, self.P, self.Np/4)
         self.interp_fir_filter_xxx_0 = filter.interp_fir_filter_ccc(4, (firdes.low_pass_2(1, 1, 1/8.0, 1/16.0, 80)))
         self.interp_fir_filter_xxx_0.declare_sample_delay(0)
         self.fec_extended_encoder_0 = fec.extended_encoder(encoder_obj_list=enc_cc, threading='capillary', puncpat='11')
-        self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_bc((const.points()), 1)
+        self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_bc((self.const.points()), 1)
         self.channels_channel_model_0 = channels.channel_model(
-            noise_voltage=10.0**(-snr_db/20.0),
+            noise_voltage=10.0**(-self.snr_db/20.0),
             frequency_offset=0.0,
             epsilon=1.0,
             taps=(1.0, ),
@@ -74,13 +73,13 @@ class modulation_and_coding_scheme(gr.top_block):
             block_tags=False
         )
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
-        self.blocks_repack_bits_bb_0 = blocks.repack_bits_bb(1, int(np.log2(const.arity())), "", False, gr.GR_LSB_FIRST)
+        self.blocks_repack_bits_bb_0 = blocks.repack_bits_bb(1, int(np.log2(self.const.arity())), "", False, gr.GR_LSB_FIRST)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
-        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*2*Np)
+        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*2*self.Np)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_complex_to_real_0 = blocks.complex_to_real(1)
-        self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, samp_rate/4, 1, 0)
+        self.analog_sig_source_x_0 = analog.sig_source_c(self.samp_rate, analog.GR_COS_WAVE, self.samp_rate/4, 1, 0)
         self.analog_random_source_x_0 = blocks.vector_source_b(map(int, numpy.random.randint(0, 256, 10000)), True)
 
         ##################################################
