@@ -71,7 +71,7 @@ class modulation_and_coding_scheme(gr.top_block):
             noise_seed=0,
             block_tags=False
         )
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, self.samp_rate,True)
         self.blocks_repack_bits_bb_0 = blocks.repack_bits_bb(1, int(np.log2(self.const.arity())), "", False, gr.GR_LSB_FIRST)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*2*self.Np)
