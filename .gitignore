@@ -2,3 +2,4 @@
 *.png
 *.eps
 *.pyc
+examples/*.py

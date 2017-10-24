@@ -11,7 +11,7 @@ import logging
 import numpy as np
 
 
-NUM_SAMPLES_PER_SNR = 50
+NUM_SAMPLES_PER_SNR = 2000
 SNR_RANGE = range(0, 30, 3)
 FIGURE_FILENAME = 'pcc_v_snr_3_class'
 
@@ -22,7 +22,9 @@ class Classifier:
         self.logger.setLevel(logging.DEBUG)
 
         self.classes = [modulation_and_coding_scheme(16, 256, 'bpsk', '1/2'),
-                        modulation_and_coding_scheme(16, 256, 'bpsk', '2/3')]
+                        modulation_and_coding_scheme(16, 256, 'bpsk', '6/7'),
+                        modulation_and_coding_scheme(16, 256, 'qpsk', '1/2'),
+                        modulation_and_coding_scheme(16, 256, 'qpsk', '6/7')]
         self.accuracy = np.zeros(len(SNR_RANGE), dtype=np.float32)
         self.features = np.ndarray((len(SNR_RANGE)*len(self.classes)*NUM_SAMPLES_PER_SNR, 2 * self.classes[0].specest_cyclo_fam_0.get_N()))
         self.labels = np.zeros(len(SNR_RANGE)*len(self.classes)*NUM_SAMPLES_PER_SNR, dtype=np.int32)
