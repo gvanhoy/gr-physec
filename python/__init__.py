@@ -31,4 +31,5 @@ except ImportError:
 	pass
 
 # import any pure python here
+from modulation_and_coding_scheme import modulation_and_coding_scheme
 #
