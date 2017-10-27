@@ -52,7 +52,7 @@ class modulation_and_coding_scheme_fam(gr.top_block):
         if code_rate == '1':
             self.enc_cc = fec.dummy_encoder_make(2048)
         else:
-            self.enc_cc = enc_cc = fec.cc_encoder_make(2048, 7, 2, ([79, 109]), 0, fec.CC_STREAMING, False)
+            self.enc_cc = fec.cc_encoder_make(2048, 7, 2, ([79, 109]), 0, fec.CC_STREAMING, False)
         self.const = digital.constellation_bpsk().base()
         self.get_constellation_from_string(modulation)
         self.get_puncpat_from_string(code_rate)
@@ -64,7 +64,7 @@ class modulation_and_coding_scheme_fam(gr.top_block):
         self.specest_cyclo_fam_0 = specest.cyclo_fam(self.Np, self.P, self.Np/4)
         self.interp_fir_filter_xxx_0 = filter.interp_fir_filter_ccc(4, (firdes.low_pass_2(1, 1, 1/8.0, 1/16.0, 80)))
         self.interp_fir_filter_xxx_0.declare_sample_delay(0)
-        self.fec_extended_encoder_0 = fec.extended_encoder(encoder_obj_list=enc_cc, threading='capillary', puncpat='11')
+        self.fec_extended_encoder_0 = fec.extended_encoder(encoder_obj_list=self.enc_cc, threading='capillary', puncpat='11')
         self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_bc((self.const.points()), 1)
         self.channels_channel_model_0 = channels.channel_model(
             noise_voltage=10.0**(-self.snr_db/20.0),
