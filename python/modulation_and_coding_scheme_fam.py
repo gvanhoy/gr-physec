@@ -49,7 +49,10 @@ class modulation_and_coding_scheme_fam(gr.top_block):
         self.samp_rate = 100000
         self.puncpat = '11'
         self.snr_db = 10
-        self.enc_cc = enc_cc = fec.cc_encoder_make(2048, 7, 2, ([79, 109]), 0, fec.CC_STREAMING, False)
+        if code_rate == '1':
+            self.enc_cc = fec.dummy_encoder_make(2048)
+        else:
+            self.enc_cc = enc_cc = fec.cc_encoder_make(2048, 7, 2, ([79, 109]), 0, fec.CC_STREAMING, False)
         self.const = digital.constellation_bpsk().base()
         self.get_constellation_from_string(modulation)
         self.get_puncpat_from_string(code_rate)
@@ -162,6 +165,7 @@ class modulation_and_coding_scheme_fam(gr.top_block):
             becomes puncpat: '110110'
         '''
         self.puncpat = {
+            '1':   '11',
             '1/2': '11',
             '2/3': '1101',
             '3/4': '110110',
