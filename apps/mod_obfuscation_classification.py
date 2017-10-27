@@ -1,3 +1,4 @@
+from physec.file_based_fam import file_based_fam
 from sklearn.preprocessing import Normalizer
 from sklearn.svm import SVC
 from sklearn.decomposition import PCA

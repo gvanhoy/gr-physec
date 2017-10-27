@@ -1,4 +1,4 @@
-from physec.modulation_and_coding_scheme import modulation_and_coding_scheme
+from physec.modulation_and_coding_scheme_fam import modulation_and_coding_scheme_fam
 from sklearn.preprocessing import Normalizer
 from sklearn.svm import SVC
 from sklearn.decomposition import PCA

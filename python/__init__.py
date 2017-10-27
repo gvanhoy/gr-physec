@@ -31,7 +31,7 @@ except ImportError:
 	pass
 
 # import any pure python here
-from modulation_and_coding_scheme_fam import modulation_and_coding_scheme
+from modulation_and_coding_scheme_fam import modulation_and_coding_scheme_fam
 from file_based_fam import file_based_fam
 from random_fec_fam import random_fec_fam
 #
