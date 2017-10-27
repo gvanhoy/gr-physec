@@ -21,10 +21,8 @@ class Classifier:
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
 
-        self.classes = [modulation_and_coding_scheme_fam(16, 4096, 'bpsk', '1'),
-                        modulation_and_coding_scheme_fam(16, 4096, 'bpsk', '1/2'),
-                        modulation_and_coding_scheme_fam(16, 4096, 'qpsk', '1'),
-                        modulation_and_coding_scheme_fam(16, 4096, 'qpsk', '1')]
+        self.classes = [modulation_and_coding_scheme_fam(16, 4096, 'bpsk', '1/2'),
+                        modulation_and_coding_scheme_fam(16, 4096, 'bpsk', '1/2')]
         self.accuracy = np.zeros(len(SNR_RANGE), dtype=np.float32)
         self.features = np.ndarray((len(SNR_RANGE)*len(self.classes)*NUM_SAMPLES_PER_SNR, 2 * self.classes[0].specest_cyclo_fam_0.get_N()))
         self.labels = np.zeros(len(SNR_RANGE)*len(self.classes)*NUM_SAMPLES_PER_SNR, dtype=np.int32)
@@ -34,7 +32,7 @@ class Classifier:
             ('SVM', SVC(kernel='linear', decision_function_shape='ovo'))
         ])
         self.generate_features()
-        self.compare_features()
+        # self.compare_features()
         # self.cross_validation()
         self.pcc_v_snr()
 
