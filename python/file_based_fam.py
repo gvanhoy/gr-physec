@@ -1,10 +1,23 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-##################################################
-# GNU Radio Python Flow Graph
-# Title: File Based Fam
-# Generated: Mon Sep 18 03:31:01 2017
-##################################################
+# 
+# Copyright 2017 <+YOU OR YOUR COMPANY+>.
+# 
+# This is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+# 
+# This software is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this software; see the file COPYING.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street,
+# Boston, MA 02110-1301, USA.
+# 
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -12,10 +25,8 @@ from gnuradio import channels
 from gnuradio import filter
 from gnuradio import gr
 from gnuradio.filter import firdes
-import numpy
 import pmt
 import specest
-import logging
 
 
 class file_based_fam(gr.top_block):
@@ -41,12 +52,12 @@ class file_based_fam(gr.top_block):
         self.interp_fir_filter_xxx_0 = filter.interp_fir_filter_ccc(4, (firdes.low_pass_2(1, 1, 1/8.0, 1/16.0, 80)))
         self.interp_fir_filter_xxx_0.declare_sample_delay(0)
         self.channels_channel_model_0 = channels.channel_model(
-        	noise_voltage=10.0**(-snr_db/20.0),
-        	frequency_offset=0.0,
-        	epsilon=1.0,
-        	taps=(1.0, ),
-        	noise_seed=0,
-        	block_tags=False
+            noise_voltage=10.0**(-snr_db/20.0),
+            frequency_offset=0.0,
+            epsilon=1.0,
+            taps=(1.0, ),
+            noise_seed=0,
+            block_tags=False
         )
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate, True)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_float*1)
@@ -105,19 +116,3 @@ class file_based_fam(gr.top_block):
 
     def set_L(self, L):
         self.L = L
-
-
-def main(top_block_cls=file_based_fam, options=None):
-
-    tb = top_block_cls()
-    tb.start()
-    try:
-        raw_input('Press Enter to quit: ')
-    except EOFError:
-        pass
-    tb.stop()
-    tb.wait()
-
-
-if __name__ == '__main__':
-    main()

@@ -31,7 +31,9 @@ endif()
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
-    modulation_and_coding_scheme.py DESTINATION ${GR_PYTHON_DIR}/physec
+    modulation_and_coding_scheme_fam.py
+    file_based_fam.py
+    random_fec_fam.py DESTINATION ${GR_PYTHON_DIR}/physec
 )
 
 ########################################################################

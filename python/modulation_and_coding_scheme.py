@@ -31,7 +31,7 @@ import numpy as np
 import specest
 
 
-class modulation_and_coding_scheme(gr.top_block):
+class modulation_and_coding_scheme_fam(gr.top_block):
     def __init__(self,
                  Np,
                  P,

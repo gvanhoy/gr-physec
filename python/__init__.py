@@ -32,4 +32,6 @@ except ImportError:
 
 # import any pure python here
 from modulation_and_coding_scheme import modulation_and_coding_scheme
+from file_based_fam import file_based_fam
+from random_fec_fam import random_fec_fam
 #

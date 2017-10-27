@@ -1,6 +1,3 @@
-from file_based_fam import file_based_fam
-from random_source_fam import random_source_fam
-from random_fec_fam import random_fec_fam
 from sklearn.preprocessing import Normalizer
 from sklearn.svm import SVC
 from sklearn.decomposition import PCA
@@ -14,7 +11,7 @@ import numpy as np
 
 NUM_SAMPLES_PER_SNR = 50
 SNR_RANGE = range(0, 30, 3)
-FIGURE_FILENAME = 'pcc_v_snr_2_class'
+FIGURE_FILENAME = '../results/pcc_v_snr_{0}'.format(time.strftime("%Y%m%d-%H%M%S"))
 
 
 class Classifier:

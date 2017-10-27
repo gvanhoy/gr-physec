@@ -1,4 +1,3 @@
-from file_based_fam import file_based_fam
 from physec.modulation_and_coding_scheme import modulation_and_coding_scheme
 from sklearn.preprocessing import Normalizer
 from sklearn.svm import SVC
@@ -9,11 +8,12 @@ from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 import logging
 import numpy as np
+import time
 
 
-NUM_SAMPLES_PER_SNR = 2000
+NUM_SAMPLES_PER_SNR = 50
 SNR_RANGE = range(0, 30, 3)
-FIGURE_FILENAME = 'pcc_v_snr_3_class'
+FIGURE_FILENAME = '../results/pcc_v_snr_{0}'.format(time.strftime("%Y%m%d-%H%M%S"))
 
 
 class Classifier:
@@ -21,20 +21,20 @@ class Classifier:
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
 
-        self.classes = [modulation_and_coding_scheme(16, 256, 'bpsk', '1/2'),
-                        modulation_and_coding_scheme(16, 256, 'bpsk', '6/7'),
-                        modulation_and_coding_scheme(16, 256, 'qpsk', '1/2'),
-                        modulation_and_coding_scheme(16, 256, 'qpsk', '6/7')]
+        self.classes = [modulation_and_coding_scheme_fam(16, 4096, 'bpsk', '1/2'),
+                        modulation_and_coding_scheme_fam(16, 4096, 'bpsk', '6/7'),
+                        modulation_and_coding_scheme_fam(16, 4096, 'qpsk', '1/2'),
+                        modulation_and_coding_scheme_fam(16, 4096, 'qpsk', '6/7')]
         self.accuracy = np.zeros(len(SNR_RANGE), dtype=np.float32)
         self.features = np.ndarray((len(SNR_RANGE)*len(self.classes)*NUM_SAMPLES_PER_SNR, 2 * self.classes[0].specest_cyclo_fam_0.get_N()))
         self.labels = np.zeros(len(SNR_RANGE)*len(self.classes)*NUM_SAMPLES_PER_SNR, dtype=np.int32)
         self.clf = Pipeline([
             ('normalizer', Normalizer(norm='max')),
-            ('PCA', PCA(n_components=25)),
+            ('PCA', PCA(n_components=50)),
             ('SVM', SVC(kernel='linear', decision_function_shape='ovo'))
         ])
         self.generate_features()
-        # self.compare_features()
+        self.compare_features()
         # self.cross_validation()
         self.pcc_v_snr()
 
@@ -44,14 +44,14 @@ class Classifier:
                 top_block.set_snr_db(snr)
                 top_block.start()
                 logging.info("Generating features for tb:{0} snr: {1}".format(tb_index, snr))
-                for x in range(NUM_SAMPLES_PER_SNR + 1): # The first sample is being ignored here because the resulting FAM is unstable
+                for x in range(NUM_SAMPLES_PER_SNR + 5): # The first 5 samples are being ignored here because the resulting FAM is unstable
                     old_sample = np.max(np.abs(top_block.specest_cyclo_fam_0.get_estimate()), axis=1)
                     new_sample = old_sample
                     while new_sample[0] == old_sample[0]:
                         new_sample = np.max(np.abs(top_block.specest_cyclo_fam_0.get_estimate()), axis=1)
                     if x != 0:
-                        self.features[(x - 1) + tb_index*NUM_SAMPLES_PER_SNR + snr_index*len(self.classes)*NUM_SAMPLES_PER_SNR, :] = new_sample
-                        self.labels[(x - 1) + tb_index*NUM_SAMPLES_PER_SNR + snr_index*len(self.classes)*NUM_SAMPLES_PER_SNR] = tb_index
+                        self.features[(x - 5) + tb_index*NUM_SAMPLES_PER_SNR + snr_index*len(self.classes)*NUM_SAMPLES_PER_SNR, :] = new_sample
+                        self.labels[(x - 5) + tb_index*NUM_SAMPLES_PER_SNR + snr_index*len(self.classes)*NUM_SAMPLES_PER_SNR] = tb_index
                 top_block.stop()
                 top_block.wait()
         train_features, _, train_labels, _ = train_test_split(self.features, self.labels, test_size=0.33, random_state=42)
