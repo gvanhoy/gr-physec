@@ -67,7 +67,7 @@ class vsrm_ber_test(gr.top_block):
         )
         self.fec_extended_encoder_0 = fec.extended_encoder(encoder_obj_list=self.enc, threading='capillary', puncpat=self.puncpat)
         self.fec_extended_decoder_0 = fec.extended_decoder(decoder_obj_list=self.dec, threading='capillary', ann=None, puncpat=self.puncpat, integration_period=10000)
-        self.fec_ber_bf_0 = fec.ber_bf(True, 100, -7.0)
+        self.fec_ber_bf_0 = fec.ber_bf(True, 1000, -7.0)
         self.digital_constellation_soft_decoder_cf_0 = digital.constellation_soft_decoder_cf(self.const)
         self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_bc((self.const.points()), 1)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, self.samp_rate, True)

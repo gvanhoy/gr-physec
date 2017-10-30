@@ -2,7 +2,7 @@ from physec import vsrm_ber_test
 import numpy as np
 from matplotlib import pyplot as plt
 
-ESNO_RANGE = np.arange(4, 6, .25)
+ESNO_RANGE = np.arange(4, 10, 1)
 
 
 class VariableSymbolRateBER:
@@ -14,7 +14,7 @@ class VariableSymbolRateBER:
 
     def gen_ber_data(self):
         for index, esno in enumerate(ESNO_RANGE):
-            self.vsrm_ber_test = vsrm_ber_test(esno_db=esno)
+            self.vsrm_ber_test = vsrm_ber_test(esno_db=esno, spread_seq=(1, -1, 1, -1))
             self.vsrm_ber_test.run()
             self.vsrm_ber_test.wait()
             self.ber[index] = self.vsrm_ber_test.blocks_probe_signal_x_0.level()
