@@ -70,7 +70,7 @@ class vsrm_ber_test(gr.top_block):
         self.fec_ber_bf_0 = fec.ber_bf(True, 100, -7.0)
         self.digital_constellation_soft_decoder_cf_0 = digital.constellation_soft_decoder_cf(self.const)
         self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_bc((self.const.points()), 1)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate, True)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, self.samp_rate, True)
         self.blocks_repack_bits_bb_0_0_0_0 = blocks.repack_bits_bb(int(np.log2(self.const.arity())), 8, "", False, gr.GR_LSB_FIRST)
         self.blocks_repack_bits_bb_0_0_0 = blocks.repack_bits_bb(int(np.log2(self.const.arity())), 8, "", False, gr.GR_LSB_FIRST)
         self.blocks_repack_bits_bb_0 = blocks.repack_bits_bb(1, int(np.log2(self.const.arity())), "", False, gr.GR_LSB_FIRST)
