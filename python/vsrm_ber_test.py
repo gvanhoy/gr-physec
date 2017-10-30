@@ -111,7 +111,7 @@ class vsrm_ber_test(gr.top_block):
     def get_esno_db(self):
         return self.esno_db
 
-    def set_snr_db(self, esno_db):
+    def set_esno_db(self, esno_db):
         self.esno_db = esno_db
         self.analog_fastnoise_source_x_0.set_amplitude(10.0**(-self.esno_db/20.0)/np.sqrt(2))
 
