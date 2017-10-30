@@ -40,7 +40,7 @@ class vsrm_ber_test(gr.top_block):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 1000000
+        self.samp_rate = 10000000
         self.spread_seq = spread_seq
         self.esno_db = esno_db
         self.puncpat = '11'
@@ -78,7 +78,7 @@ class vsrm_ber_test(gr.top_block):
         self.blocks_delay_0 = blocks.delay(gr.sizeof_char*1, 0)
         self.blocks_add_xx_0 = blocks.add_vcc(1)
         self.analog_random_source_x_0 = blocks.vector_source_b(map(int, np.random.randint(0, self.const.arity(), 10000000)), True)
-        self.analog_fastnoise_source_x_0 = analog.fastnoise_source_c(analog.GR_GAUSSIAN, 10.0**(-esno_db/20.0)/np.sqrt(2), 0, 8192)
+        self.analog_fastnoise_source_x_0 = analog.fastnoise_source_c(analog.GR_GAUSSIAN, 10.0**(-esno_db/20.0), 0, 2**16)
 
         ##################################################
         # Connections
