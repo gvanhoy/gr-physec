@@ -28,7 +28,13 @@ class VariableSymbolRateBER:
                 self.vsrm_ber_test.stop()
 
     def plot_ber_data(self):
-        plt.plot(ESNO_RANGE, self.ber)
+        print self.ber
+        plt.plot(ESNO_RANGE,
+                 self.ber,
+                 color=['red', 'green', 'blue', 'black'],
+                 linewidth=3.0,
+                 linestyle=['--', '-.', '-', ':']
+                 )
         plt.show()
 
 if __name__ == '__main__':
