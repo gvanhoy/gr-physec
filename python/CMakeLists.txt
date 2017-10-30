@@ -33,7 +33,10 @@ GR_PYTHON_INSTALL(
     __init__.py
     modulation_and_coding_scheme_fam.py
     file_based_fam.py
-    random_fec_fam.py DESTINATION ${GR_PYTHON_DIR}/physec
+    random_fec_fam.py
+    vsrm_ber_test.py
+    vsrm_mod.py
+    vsrm_demod.py DESTINATION ${GR_PYTHON_DIR}/physec
 )
 
 ########################################################################

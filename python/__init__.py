@@ -34,4 +34,7 @@ except ImportError:
 from modulation_and_coding_scheme_fam import modulation_and_coding_scheme_fam
 from file_based_fam import file_based_fam
 from random_fec_fam import random_fec_fam
+from vsrm_ber_test import vsrm_ber_test
+from vsrm_mod import vsrm_mod
+from vsrm_demod import vsrm_demod
 #
