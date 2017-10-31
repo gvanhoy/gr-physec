@@ -96,6 +96,7 @@ class vsrm_ber_test(gr.top_block):
         self.connect((self.blocks_repack_bits_bb_0_0_0_0, 0), (self.fec_ber_bf_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.blocks_add_xx_0, 0))
         self.connect((self.digital_chunks_to_symbols_xx_0, 0), (self.vsrm_mod_0, 0))
+        self.connect((self.vsrm_demod_0, 0), (self.digital_constellation_decoder_0, 0))
         self.connect((self.digital_constellation_decoder_0, 0), (self.blocks_repack_bits_bb_1, 0))
         self.connect((self.blocks_repack_bits_bb_1, 0), (self.digital_map_bb_0, 0))
         self.connect((self.digital_map_bb_0, 0), (self.blocks_char_to_float_0_1, 0))
