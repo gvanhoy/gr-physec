@@ -102,7 +102,7 @@ class vsrm_ber_test(gr.top_block):
         self.connect((self.fec_ber_bf_0, 0), (self.blocks_probe_signal_x_0, 0))
         self.connect((self.fec_extended_decoder_0, 0), (self.blocks_repack_bits_bb_0_0_0_0, 0))
         self.connect((self.fec_extended_encoder_0, 0), (self.blocks_repack_bits_bb_0, 0))
-        self.connect((self.blocks_char_to_float_0_1, 0), (self.digital_constellation_decoder_0, 0))
+        self.connect((self.blocks_char_to_float_0_1, 0), (self.fec_extended_decoder_0, 0))
         self.connect((self.vsrm_mod_0, 0), (self.blocks_throttle_0, 0))
 
     def get_spread_seq(self):
