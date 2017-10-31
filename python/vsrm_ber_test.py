@@ -59,29 +59,30 @@ class vsrm_ber_test(gr.top_block):
         # Blocks
         ##################################################
         self.vsrm_mod_0 = vsrm_mod(
-            spread_seq=self.spread_seq,
+            spread_seq=spread_seq,
         )
         self.vsrm_demod_0 = vsrm_demod(
             delay=0,
-            spread_seq=self.spread_seq,
+            spread_seq=spread_seq,
         )
         self.fec_extended_encoder_0 = fec.extended_encoder(encoder_obj_list=self.enc, threading='capillary', puncpat=self.puncpat)
         self.fec_extended_decoder_0 = fec.extended_decoder(decoder_obj_list=self.dec, threading='capillary', ann=None, puncpat=self.puncpat, integration_period=10000)
-        self.fec_ber_bf_0 = fec.ber_bf(True, 1000, -7.0)
-        self.digital_constellation_decoder_0 = digital.constellation_decoder_cb(self.const)
+        self.fec_ber_bf_0 = fec.ber_bf(False, 100, -7.0)
+        self.digital_map_bb_0 = digital.map_bb((-1, 1))
+        self.digital_constellation_decoder_cb_0 = digital.constellation_decoder_cb(self.const)
         self.digital_chunks_to_symbols_xx_0 = digital.chunks_to_symbols_bc((self.const.points()), 1)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, self.samp_rate, True)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, self.samp_rate,True)
+        self.blocks_repack_bits_bb_0_0_0_0_0 = blocks.repack_bits_bb(int(np.log2(self.const.arity())), 1, "", False, gr.GR_LSB_FIRST)
         self.blocks_repack_bits_bb_0_0_0_0 = blocks.repack_bits_bb(1, 8, "", False, gr.GR_LSB_FIRST)
         self.blocks_repack_bits_bb_0_0_0 = blocks.repack_bits_bb(1, 8, "", False, gr.GR_LSB_FIRST)
         self.blocks_repack_bits_bb_0 = blocks.repack_bits_bb(1, int(np.log2(self.const.arity())), "", False, gr.GR_LSB_FIRST)
-        self.blocks_repack_bits_bb_1 = blocks.repack_bits_bb(1, int(np.log2(self.const.arity())), "", False, gr.GR_LSB_FIRST)
         self.blocks_probe_signal_x_0 = blocks.probe_signal_f()
         self.blocks_delay_0 = blocks.delay(gr.sizeof_char*1, 0)
+        self.blocks_char_to_float_0_1 = blocks.char_to_float(1, 1)
         self.blocks_add_xx_0 = blocks.add_vcc(1)
         self.analog_random_source_x_0 = blocks.vector_source_b(map(int, np.random.randint(0, 2, 10000000)), True)
-        self.analog_fastnoise_source_x_0 = analog.fastnoise_source_c(analog.GR_GAUSSIAN, 10.0**(-esno_db/20.0), 0, 2**16)
-        self.digital_map_bb_0 = digital.map_bb((-1, 1))
-        self.blocks_char_to_float_0_1 = blocks.char_to_float(1, 1)
+        self.analog_fastnoise_source_x_0 = analog.fastnoise_source_c(analog.GR_GAUSSIAN, 10.0**(-esno_db/20.0), 0, 8192*1000)
+
 
         ##################################################
         # Connections
@@ -90,20 +91,20 @@ class vsrm_ber_test(gr.top_block):
         self.connect((self.analog_random_source_x_0, 0), (self.blocks_delay_0, 0))
         self.connect((self.analog_random_source_x_0, 0), (self.fec_extended_encoder_0, 0))
         self.connect((self.blocks_add_xx_0, 0), (self.vsrm_demod_0, 0))
+        self.connect((self.blocks_char_to_float_0_1, 0), (self.fec_extended_decoder_0, 0))
         self.connect((self.blocks_delay_0, 0), (self.blocks_repack_bits_bb_0_0_0, 0))
         self.connect((self.blocks_repack_bits_bb_0, 0), (self.digital_chunks_to_symbols_xx_0, 0))
         self.connect((self.blocks_repack_bits_bb_0_0_0, 0), (self.fec_ber_bf_0, 1))
         self.connect((self.blocks_repack_bits_bb_0_0_0_0, 0), (self.fec_ber_bf_0, 0))
+        self.connect((self.blocks_repack_bits_bb_0_0_0_0_0, 0), (self.digital_map_bb_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.blocks_add_xx_0, 0))
         self.connect((self.digital_chunks_to_symbols_xx_0, 0), (self.vsrm_mod_0, 0))
-        self.connect((self.vsrm_demod_0, 0), (self.digital_constellation_decoder_0, 0))
-        self.connect((self.digital_constellation_decoder_0, 0), (self.blocks_repack_bits_bb_1, 0))
-        self.connect((self.blocks_repack_bits_bb_1, 0), (self.digital_map_bb_0, 0))
+        self.connect((self.digital_constellation_decoder_cb_0, 0), (self.blocks_repack_bits_bb_0_0_0_0_0, 0))
         self.connect((self.digital_map_bb_0, 0), (self.blocks_char_to_float_0_1, 0))
         self.connect((self.fec_ber_bf_0, 0), (self.blocks_probe_signal_x_0, 0))
         self.connect((self.fec_extended_decoder_0, 0), (self.blocks_repack_bits_bb_0_0_0_0, 0))
         self.connect((self.fec_extended_encoder_0, 0), (self.blocks_repack_bits_bb_0, 0))
-        self.connect((self.blocks_char_to_float_0_1, 0), (self.fec_extended_decoder_0, 0))
+        self.connect((self.vsrm_demod_0, 0), (self.digital_constellation_decoder_cb_0, 0))
         self.connect((self.vsrm_mod_0, 0), (self.blocks_throttle_0, 0))
 
     def get_spread_seq(self):
@@ -119,7 +120,7 @@ class vsrm_ber_test(gr.top_block):
 
     def set_esno_db(self, esno_db):
         self.esno_db = esno_db
-        self.analog_fastnoise_source_x_0.set_amplitude(10.0**(-self.esno_db/20.0)/np.sqrt(2))
+        self.analog_fastnoise_source_x_0.set_amplitude(10.0**(-self.esno_db/20.0))
 
     def get_samp_rate(self):
         return self.samp_rate
