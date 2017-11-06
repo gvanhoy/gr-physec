@@ -53,6 +53,7 @@ class VariableSymbolRateBER:
                      linewidth=3.0,
                      linestyle=LINE_STYLES[x],
                      marker=MARKERS[x],
+                     markersize=10,
                      label=description_string)
         self.save_figure(1, "Bit Error Rate", FIGURE_FILENAME)
 
@@ -65,7 +66,7 @@ class VariableSymbolRateBER:
         plt.legend(loc='lower left')
         plt.title(figure_title, fontsize=18)
         plt.grid(True)
-        plt.show()
+        # plt.show()
         plt.savefig(file_name + '.eps', format='eps', dpi=1000)
         plt.savefig(file_name + '.png', format='png', dpi=300)
 
