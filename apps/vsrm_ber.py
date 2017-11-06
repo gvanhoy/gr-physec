@@ -3,12 +3,12 @@ from matplotlib import pyplot as plt
 import numpy as np
 import time
 
-ESNO_RANGE = np.arange(0, 7, 1)
+ESNO_RANGE = np.arange(10, 15, 1)
 EXPERIMENT_DESC = {
-    0: ('bpsk', '1', (1,)),
-    1: ('bpsk', '1/2', (1,)),
-    2: ('bpsk', '1', (1, -1)),
-    3: ('bpsk', '1/2', (1, -1)),
+    0: ('16qam', '1', (1,)),
+    1: ('16qam', '1/2', (1,)),
+    2: ('16qam', '1', (1, -1)),
+    3: ('16qam', '1/2', (1, -1)),
     4: ('qpsk', '1', (1,)),
     5: ('qpsk', '1/2', (1,)),
     6: ('qpsk', '1', (1, -1)),

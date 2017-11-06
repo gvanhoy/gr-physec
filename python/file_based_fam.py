@@ -31,7 +31,10 @@ import specest
 
 class file_based_fam(gr.top_block):
 
-    def __init__(self, filename=""):
+    def __init__(self,
+                 Np,
+                 P,
+                 filename=""):
         gr.top_block.__init__(self, "File Based Fam")
 
         ##################################################
@@ -39,8 +42,8 @@ class file_based_fam(gr.top_block):
         ##################################################
         self.snr_db = snr_db = 10
         self.samp_rate = samp_rate = 100000
-        self.P = P = 256
-        self.Np = Np = 16
+        self.P = P
+        self.Np = Np
         self.L = L = self.Np/4
         print "Approximate amount of points for SCD: {0}".format(self.P*self.Np/4)
         self.filename = filename

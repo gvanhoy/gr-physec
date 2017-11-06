@@ -11,7 +11,7 @@ import numpy as np
 
 
 NUM_SAMPLES_PER_SNR = 50
-SNR_RANGE = range(0, 30, 3)
+SNR_RANGE = range(30, 30, 3)
 FIGURE_FILENAME = '../results/pcc_v_snr_{0}'.format(time.strftime("%Y%m%d-%H%M%S"))
 
 
