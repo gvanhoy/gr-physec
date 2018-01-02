@@ -25,16 +25,19 @@ import pmt
 
 
 class file_demod(gr.top_block):
-
-    def __init__(self):
+    def __init__(self,
+                 file_name="",
+                 modulation="bpsk"):
         gr.top_block.__init__(self, "File Demodulator")
 
         ##################################################
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 100000
-
-        self.const = const = digital.constellation_qpsk().base()
+        self.file_name = file_name
+        self.const = const = digital.constellation_bpsk().base()
+        self.const = digital.constellation_bpsk().base()
+        self.get_constellation_from_string(modulation)
 
 
         ##################################################
