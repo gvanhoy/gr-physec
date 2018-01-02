@@ -64,6 +64,7 @@ namespace gr {
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
       gr_complex *out = (gr_complex *) output_items[0];
+      unsigned int num_items = 0;
 
       while(num_items < noutput_items){
             if(rand() % 2 == 0 && num_items + 4 < noutput_items){
