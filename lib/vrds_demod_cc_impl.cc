@@ -25,6 +25,7 @@
 #include <gnuradio/io_signature.h>
 #include "vrds_demod_cc_impl.h"
 #include <vector>
+#include <iostream>
 
 namespace gr {
   namespace physec {
@@ -70,6 +71,8 @@ namespace gr {
                          0,
                          noutput_items,
                          pmt::mp("s"));
+      std::cout << "Got " << tags.length() << " tags." << std::endl;
+
       for(tag_t tag : tags){
         tag_rel_index = tag.offset - nitems_read(0);
         if(pmt::to_long(tag.value) == 2){
