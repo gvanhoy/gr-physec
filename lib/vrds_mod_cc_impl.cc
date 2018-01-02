@@ -68,28 +68,35 @@ namespace gr {
 
       while(num_items < noutput_items){
             if(rand() % 2 == 0 && num_items + 4 < noutput_items){
-                out[num_items] = (in[num_items] +
+                out[num_items] = in[num_items] +
                                   in[num_items + 1] +
                                   in[num_items + 2] +
-                                  in[num_items + 3])/4.0;
-                out[num_items + 1] = (-in[num_items] +
+                                  in[num_items + 3];
+                out[num_items + 1] = -in[num_items] +
                                       in[num_items + 1] +
                                       in[num_items + 2] -
-                                      in[num_items + 3])/4.0;
-                out[num_items + 2] = (in[num_items] +
+                                      in[num_items + 3];
+                out[num_items + 2] = in[num_items] +
                                       in[num_items + 1] -
                                       in[num_items + 2] -
-                                      in[num_items + 3])/4.0;
-                out[num_items + 3] = (in[num_items] -
+                                      in[num_items + 3];
+                out[num_items + 3] = in[num_items] -
                                       in[num_items + 1] +
                                       in[num_items + 2] -
-                                      in[num_items + 3])/4.0;
+                                      in[num_items + 3];
+                for(unsigned int i = 0; i < 4; i++){
+                    out[num_items + i].real() /= 4.0;
+                    out[num_items + i].imag() /= 4.0;
+                }
                 num_items += 4;
-
             }
             else{
-                out[num_items] = (in[num_items] + in[num_items + 1])/2.0;
-                out[num_items + 1] = (in[num_items] - in[num_items + 1])/2.0;
+                out[num_items] = in[num_items] + in[num_items + 1];
+                out[num_items + 1] = in[num_items] - in[num_items + 1];
+                for(unsigned int i = 0; i < 2; i++){
+                    out[num_items + i].real() /= 2.0;
+                    out[num_items + i].imag() /= 2.0;
+                }
                 num_items += 2;
             }
       }
