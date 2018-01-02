@@ -104,6 +104,10 @@ namespace gr {
             in[tag_rel_index + 1] +
             in[tag_rel_index + 2] -
             in[tag_rel_index + 3];
+            for(unsigned int i = 0; i < 4; i++){
+                    out[tag_rel_index + i].real() /= 2.0;
+                    out[tag_rel_index + i].imag() /= 2.0;
+            }
         }
       }
 
