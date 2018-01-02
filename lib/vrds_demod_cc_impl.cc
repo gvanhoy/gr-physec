@@ -76,7 +76,7 @@ namespace gr {
         tag_rel_index = tags[i].offset - nitems_read(0);
         std::cout << "Tag rel index: " << tag_rel_index << std::endl;
 
-        if(pmt::to_long(tag.value) == 2){
+        if(pmt::to_long(tags[i].value) == 2){
             out[tag_rel_index] = in[tag_rel_index] + in[tag_rel_index + 1];
             out[tag_rel_index + 1] = in[tag_rel_index] - in[tag_rel_index + 1];
         }
