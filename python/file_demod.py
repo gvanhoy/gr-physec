@@ -43,7 +43,7 @@ class file_demod(gr.top_block):
         self.digital_constellation_decoder_cb_0 = digital.constellation_decoder_cb(const)
         self.blocks_vector_sink_x_0 = blocks.vector_sink_b(1)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_char*1, samp_rate,True)
-        self.blocks_repack_bits_bb_0 = blocks.repack_bits_bb(const.bits_per_symbol(), 8, "", False, gr.GR_LSB_FIRST)
+        self.blocks_repack_bits_bb_0 = blocks.repack_bits_bb(const.bits_per_symbol(), 1, "", False, gr.GR_LSB_FIRST)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/gvanhoy/gr-physec/apps/sources/bpsk2qam16.bin', False)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
 
