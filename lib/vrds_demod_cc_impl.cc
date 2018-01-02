@@ -74,7 +74,7 @@ namespace gr {
 
       for(unsigned int i = 0; i < tags.size(); i++){
         tag_rel_index = tags[i].offset - nitems_read(0);
-        std::cout << "Tag rel index: " << tag_rel_index << std::endl;
+        std::cout << "Num symbols: " << pmt::to_long(tags[i].value) << std::endl;
 
         if(pmt::to_long(tags[i].value) == 2){
             out[tag_rel_index] = in[tag_rel_index] + in[tag_rel_index + 1];
