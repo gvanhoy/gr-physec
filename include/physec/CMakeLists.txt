@@ -22,5 +22,5 @@
 ########################################################################
 install(FILES
     api.h
-    DESTINATION include/physec
+    vrds_mod_cc.h DESTINATION include/physec
 )

@@ -21,8 +21,8 @@ class Classifier:
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
 
-        self.classes = [modulation_and_coding_scheme_fam(16, 4096, 'bpsk', '1/2'),
-                        modulation_and_coding_scheme_fam(16, 4096, 'bpsk', '6/7')]
+        self.classes = [modulation_and_coding_scheme_fam(16, 256, 'bpsk', '1/2'),
+                        modulation_and_coding_scheme_fam(16, 256, 'bpsk', '1/2')]
         self.accuracy = np.zeros(len(SNR_RANGE), dtype=np.float32)
         self.features = np.ndarray((len(SNR_RANGE)*len(self.classes)*NUM_SAMPLES_PER_SNR, 2 * self.classes[0].specest_cyclo_fam_0.get_N()))
         self.labels = np.zeros(len(SNR_RANGE)*len(self.classes)*NUM_SAMPLES_PER_SNR, dtype=np.int32)

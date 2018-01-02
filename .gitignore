@@ -3,3 +3,5 @@
 *.eps
 *.pyc
 examples/*.py
+build/
+utils/two_state.fsm

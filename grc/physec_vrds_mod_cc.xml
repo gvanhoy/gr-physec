@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<block>
+  <name>Variable Rate Direct Sequence Modulator</name>
+  <key>physec_vrds_mod_cc</key>
+  <category>[physec]</category>
+  <import>import physec</import>
+  <make>physec.vrds_mod_cc()</make>
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+</block>

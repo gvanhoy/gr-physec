@@ -1,8 +1,10 @@
 from physec.file_based_fam import file_based_fam
+from physec.modulation_and_coding_scheme_fam import modulation_and_coding_scheme_fam
 from sklearn.preprocessing import Normalizer
 from sklearn.svm import SVC
 from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
+from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 import logging
@@ -11,7 +13,7 @@ import numpy as np
 
 
 NUM_SAMPLES_PER_SNR = 30
-SNR_RANGE = np.linspace(10, 20, 6)
+SNR_RANGE = np.linspace(30, 45, 6)
 FIGURE_FILENAME = '../results/pcc_v_snr_{0}'.format(time.strftime("%Y%m%d-%H%M%S"))
 
 
@@ -20,11 +22,18 @@ class Classifier:
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
 
-        self.training_top_blocks = [file_based_fam(16, 256, "/home/gvanhoy/gr-physec/apps/sources/bpsk2qam16_first_half.bin"),
-                                    file_based_fam(16, 256, "/home/gvanhoy/gr-physec/apps/sources/qam16_first_half.bin")]
+        # self.training_top_blocks = [file_based_fam(16, 128, "/home/gvanhoy/gr-physec/apps/sources/bpsk2qam16_first_half.bin"),
+        #                             file_based_fam(16, 128, "/home/gvanhoy/gr-physec/apps/sources/qam16_first_half.bin")]
+        #
+        # self.testing_top_blocks = [file_based_fam(16, 128, "/home/gvanhoy/gr-physec/apps/sources/bpsk2qam16_second_half.bin"),
+        #                            file_based_fam(16, 128, "/home/gvanhoy/gr-physec/apps/sources/qam16_second_half.bin")]
 
-        self.testing_top_blocks = [file_based_fam(16, 256, "/home/gvanhoy/gr-physec/apps/sources/bpsk2qam16_second_half.bin"),
-                                   file_based_fam(16, 256, "/home/gvanhoy/gr-physec/apps/sources/qam16_second_half.bin")]
+        self.training_top_blocks = [file_based_fam(16, 128, "/home/gvanhoy/gr-physec/apps/sources/bpsk2qam16_first_half.bin"),
+                                    modulation_and_coding_scheme_fam(16, 128, '16qam', "1")]
+
+        self.testing_top_blocks = [file_based_fam(16, 128, "/home/gvanhoy/gr-physec/apps/sources/bpsk2qam16_second_half.bin"),
+                                   modulation_and_coding_scheme_fam(16, 128, '16qam', "1")]
+
         self.accuracy = np.zeros(len(SNR_RANGE), dtype=np.float32)
         self.training_features = np.ndarray((len(SNR_RANGE)*len(self.training_top_blocks)*NUM_SAMPLES_PER_SNR, 2 * self.training_top_blocks[0].specest_cyclo_fam_0.get_N()))
         self.training_labels = np.zeros(len(SNR_RANGE)*len(self.training_top_blocks)*NUM_SAMPLES_PER_SNR, dtype=np.int32)
@@ -37,7 +46,7 @@ class Classifier:
         ])
         self.generate_features()
         self.compare_features()
-        # self.cross_validation()
+        self.cross_validation()
         self.pcc_v_snr()
 
     def generate_features(self):
@@ -88,8 +97,12 @@ class Classifier:
                  linestyle='--')
         self.save_figure(1, 'Percent Correct Classification', FIGURE_FILENAME)
 
-    # def cross_validation(self):
-        # logging.info("Cross Validation Scores: " + str(cross_val_score(self.clf, self.t, self.train_labels)))
+    def cross_validation(self):
+        logging.info("Cross Validation Scores: " + str(cross_val_score(self.clf,
+                                                                       np.concatenate((self.testing_features,
+                                                                                       self.training_features)),
+                                                                       np.concatenate((self.testing_labels,
+                                                                                       self.training_labels)))))
 
     def save_figure(self, figure_number, figure_title, file_name):
         plt.figure(figure_number)
