@@ -74,19 +74,15 @@ namespace gr {
 
       for(unsigned int i = 0; i < tags.size(); i++){
         idx = tags[i].offset - nitems_read(0);
-        std::cout << "Num symbols: " << pmt::to_long(tags[i].value) << std::endl;
 
         if(pmt::to_long(tags[i].value) == 2){
-            out[idx] = in[idx] + in[idx + 1];
-            out[idx + 1] = in[idx] - in[idx + 1];
+            out[idx] =      in[idx] + in[idx + 1];
+            out[idx + 1] =  in[idx] - in[idx + 1];
         }
         else{
             out[idx] =      in[idx] + in[idx + 1] + in[idx + 2] + in[idx + 3];
-
             out[idx + 1] = -in[idx] + in[idx + 1] + in[idx + 2] - in[idx + 3];
-
             out[idx + 2] =  in[idx] + in[idx + 1] - in[idx + 2] - in[idx + 3];
-
             out[idx + 3] =  in[idx] - in[idx + 1] + in[idx + 2] - in[idx + 3];
         }
       }
