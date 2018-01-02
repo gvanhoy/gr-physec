@@ -68,11 +68,11 @@ namespace gr {
 
 
       while(num_items < noutput_items){
-            add_item_tag(0,
+            if(rand() % 2 == 0 && num_items + 4 < noutput_items){
+                add_item_tag(0,
                          nitems_read(0) + num_items,
                          pmt::mp("s"),
                          pmt::from_long(4));
-            if(rand() % 2 == 0 && num_items + 4 < noutput_items){
                 out[num_items] = in[num_items] +
                                   in[num_items + 1] +
                                   in[num_items + 2] +
