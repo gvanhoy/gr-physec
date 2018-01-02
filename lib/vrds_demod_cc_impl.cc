@@ -71,7 +71,7 @@ namespace gr {
                          0,
                          noutput_items,
                          pmt::mp("s"));
-      std::cout << "Got " << tags.length() << " tags." << std::endl;
+      std::cout << "Got " << tags.size() << " tags." << std::endl;
 
       for(tag_t tag : tags){
         tag_rel_index = tag.offset - nitems_read(0);
