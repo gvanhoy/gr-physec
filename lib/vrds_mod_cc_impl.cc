@@ -66,7 +66,12 @@ namespace gr {
       gr_complex *out = (gr_complex *) output_items[0];
       unsigned int num_items = 0;
 
+
       while(num_items < noutput_items){
+            add_item_tag(0,
+                         nitems_read(0) + num_items,
+                         pmt.intern("s"),
+                         pmt.from_long(4));
             if(rand() % 2 == 0 && num_items + 4 < noutput_items){
                 out[num_items] = in[num_items] +
                                   in[num_items + 1] +
@@ -91,6 +96,10 @@ namespace gr {
                 num_items += 4;
             }
             else{
+                add_item_tag(0,
+                         nitems_read(0) + num_items,
+                         pmt.intern("s"),
+                         pmt.from_long(2));
                 out[num_items] = in[num_items] + in[num_items + 1];
                 out[num_items + 1] = in[num_items] - in[num_items + 1];
                 for(unsigned int i = 0; i < 2; i++){
