@@ -25,35 +25,35 @@ import pmt
 
 
 class file_demod(gr.top_block):
-    def __init__(self,
-                 file_name="",
-                 modulation="bpsk"):
+
+    def __init__(self):
         gr.top_block.__init__(self, "File Demodulator")
 
         ##################################################
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 100000
-        self.file_name = file_name
-        self.const = const = digital.constellation_bpsk().base()
-        self.const = digital.constellation_bpsk().base()
-        self.get_constellation_from_string(modulation)
+
+        self.const = const = digital.constellation_qpsk().base()
+
 
         ##################################################
         # Blocks
         ##################################################
         self.digital_constellation_decoder_cb_0 = digital.constellation_decoder_cb(const)
         self.blocks_vector_sink_x_0 = blocks.vector_sink_b(1)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_char*1, samp_rate, True)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, self.file_name, False)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_char*1, samp_rate,True)
+        self.blocks_repack_bits_bb_0 = blocks.repack_bits_bb(const.bits_per_symbol(), 8, "", False, gr.GR_LSB_FIRST)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/gvanhoy/gr-physec/apps/sources/bpsk2qam16.bin', False)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
 
         ##################################################
         # Connections
         ##################################################
         self.connect((self.blocks_file_source_0, 0), (self.digital_constellation_decoder_cb_0, 0))
+        self.connect((self.blocks_repack_bits_bb_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.blocks_vector_sink_x_0, 0))
-        self.connect((self.digital_constellation_decoder_cb_0, 0), (self.blocks_throttle_0, 0))
+        self.connect((self.digital_constellation_decoder_cb_0, 0), (self.blocks_repack_bits_bb_0, 0))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -78,7 +78,6 @@ class file_demod(gr.top_block):
 
 
 def main(top_block_cls=file_demod, options=None):
-
     tb = top_block_cls()
     tb.start()
     try:
