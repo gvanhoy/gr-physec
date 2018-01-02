@@ -64,7 +64,7 @@ namespace gr {
       gr_complex *out = (gr_complex *) output_items[0];
 
       std::vector<tag_t> tags;
-      uint64_t tag_rel_index = 0;
+      uint64_t idx = 0;
 
       get_tags_in_window(tags,
                          0,
@@ -73,37 +73,21 @@ namespace gr {
                          pmt::mp("s"));
 
       for(unsigned int i = 0; i < tags.size(); i++){
-        tag_rel_index = tags[i].offset - nitems_read(0);
+        idx = tags[i].offset - nitems_read(0);
         std::cout << "Num symbols: " << pmt::to_long(tags[i].value) << std::endl;
 
         if(pmt::to_long(tags[i].value) == 2){
-            out[tag_rel_index] = in[tag_rel_index] + in[tag_rel_index + 1];
-            out[tag_rel_index + 1] = in[tag_rel_index] - in[tag_rel_index + 1];
+            out[idx] = in[idx] + in[idx + 1];
+            out[idx + 1] = in[idx] - in[idx + 1];
         }
         else{
-            out[tag_rel_index] =
-            in[tag_rel_index] -
-            in[tag_rel_index + 1] +
-            in[tag_rel_index + 2] +
-            in[tag_rel_index + 3];
+            out[idx] =      in[idx] + in[idx + 1] + in[idx + 2] + in[idx + 3];
 
-            out[tag_rel_index + 1] =
-            in[tag_rel_index] +
-            in[tag_rel_index + 1] +
-            in[tag_rel_index + 2] -
-            in[tag_rel_index + 3];
+            out[idx + 1] = -in[idx] + in[idx + 1] + in[idx + 2] - in[idx + 3];
 
-            out[tag_rel_index + 2] =
-            in[tag_rel_index] +
-            in[tag_rel_index + 1] -
-            in[tag_rel_index + 2] +
-            in[tag_rel_index + 3];
+            out[idx + 2] =  in[idx] + in[idx + 1] - in[idx + 2] - in[idx + 3];
 
-            out[tag_rel_index + 3] =
-            in[tag_rel_index] -
-            in[tag_rel_index + 1] -
-            in[tag_rel_index + 2] -
-            in[tag_rel_index + 3];
+            out[idx + 3] =  in[idx] - in[idx + 1] + in[idx + 2] - in[idx + 3];
         }
       }
 
