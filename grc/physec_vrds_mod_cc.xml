@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <block>
-  <name>Variable Rate Direct Sequence Modulator</name>
+  <name>VRDS Modulator</name>
   <key>physec_vrds_mod_cc</key>
   <category>[physec]</category>
   <import>import physec</import>

@@ -9,8 +9,11 @@
 
 %{
 #include "physec/vrds_mod_cc.h"
+#include "physec/vrds_demod_cc.h"
 %}
 
 
 %include "physec/vrds_mod_cc.h"
 GR_SWIG_BLOCK_MAGIC2(physec, vrds_mod_cc);
+%include "physec/vrds_demod_cc.h"
+GR_SWIG_BLOCK_MAGIC2(physec, vrds_demod_cc);

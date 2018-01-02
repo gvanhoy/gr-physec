@@ -27,6 +27,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND physec_sources
     vrds_mod_cc_impl.cc
+    vrds_demod_cc_impl.cc
 )
 
 set(physec_sources "${physec_sources}" PARENT_SCOPE)
