@@ -73,20 +73,20 @@ namespace gr {
                          nitems_read(0) + num_items,
                          pmt::mp("s"),
                          pmt::from_long(4));
-                out[num_items] = in[num_items] +
+                out[num_items] = in[num_items] -
                                   in[num_items + 1] +
                                   in[num_items + 2] +
                                   in[num_items + 3];
-                out[num_items + 1] = -in[num_items] +
+                out[num_items + 1] = in[num_items] +
                                       in[num_items + 1] +
                                       in[num_items + 2] -
                                       in[num_items + 3];
                 out[num_items + 2] = in[num_items] +
                                       in[num_items + 1] -
-                                      in[num_items + 2] -
+                                      in[num_items + 2] +
                                       in[num_items + 3];
                 out[num_items + 3] = in[num_items] -
-                                      in[num_items + 1] +
+                                      in[num_items + 1] -
                                       in[num_items + 2] -
                                       in[num_items + 3];
                 for(unsigned int i = 0; i < 4; i++){
