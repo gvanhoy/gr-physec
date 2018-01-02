@@ -21,6 +21,7 @@
 from gnuradio import blocks
 from gnuradio import digital
 from gnuradio import gr
+import numpy as np
 import pmt
 
 
@@ -76,8 +77,28 @@ class file_demod(gr.top_block):
             'bpsk': digital.constellation_bpsk().base(),
             'qpsk': digital.constellation_qpsk().base(),
             '8psk': digital.constellation_8psk().base(),
-            '16qam': digital.constellation_16qam().base()
+            '16qam': self.constellation_16qam()
         }.get(const_string, digital.constellation_bpsk().base())
+
+    def constellation_16qam(self):
+        # points are separated as such
+        real, imaginary = np.meshgrid(np.linspace(-3, 3, 4), np.linspace(-3, 3, 4))
+        constellation_points = real + np.multiply(imaginary, 1j)
+        gray_code = [
+            2, 6, 14, 10,
+            3, 7, 15, 11,
+            1, 5, 13, 9,
+            0, 4, 12, 8
+        ]
+        return digital.constellation_rect(
+            constellation_points.flatten(),
+            gray_code,
+            4,  # rotational symmetry
+            4,  # real sectors
+            4,  # imaginary sectors
+            2,  # real sector width
+            2   # imaginary sector width
+        ).base()
 
 
 def main(top_block_cls=file_demod, options=None):
