@@ -72,9 +72,10 @@ namespace gr {
                          noutput_items,
                          pmt::mp("s"));
 
-      for(tag_t tag : tags){
-        tag_rel_index = tag.offset - nitems_read(0);
+      for(unsigned int i = 0; i < tags.size(); i++){
+        tag_rel_index = tags[i].offset - nitems_read(0);
         std::cout << "Tag rel index: " << tag_rel_index << std::endl;
+
         if(pmt::to_long(tag.value) == 2){
             out[tag_rel_index] = in[tag_rel_index] + in[tag_rel_index + 1];
             out[tag_rel_index + 1] = in[tag_rel_index] - in[tag_rel_index + 1];
