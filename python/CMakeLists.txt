@@ -36,7 +36,8 @@ GR_PYTHON_INSTALL(
     random_fec_fam.py
     vsrm_ber_test.py
     vsrm_mod.py
-    vsrm_demod.py DESTINATION ${GR_PYTHON_DIR}/physec
+    vsrm_demod.py
+    file_demod.py DESTINATION ${GR_PYTHON_DIR}/physec
 )
 
 ########################################################################

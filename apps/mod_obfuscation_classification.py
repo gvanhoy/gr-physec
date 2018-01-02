@@ -10,7 +10,7 @@ import time
 import numpy as np
 
 
-NUM_SAMPLES_PER_SNR =
+NUM_SAMPLES_PER_SNR = 30
 SNR_RANGE = np.linspace(10, 20, 6)
 FIGURE_FILENAME = '../results/pcc_v_snr_{0}'.format(time.strftime("%Y%m%d-%H%M%S"))
 
@@ -46,7 +46,7 @@ class Classifier:
                 top_block.set_snr_db(snr)
                 top_block.start()
                 logging.info("Generating training features for tb:{0} snr: {1}".format(tb_index, snr))
-                for x in range(NUM_SAMPLES_PER_SNR + 1): # The first sample is being ignored here because the resulting FAM is unstable
+                for x in range(NUM_SAMPLES_PER_SNR + 1):  # The first sample is being ignored here because the resulting FAM is unstable
                     old_sample = np.max(np.abs(top_block.specest_cyclo_fam_0.get_estimate()), axis=1)
                     new_sample = old_sample
                     while new_sample[0] == old_sample[0]:
