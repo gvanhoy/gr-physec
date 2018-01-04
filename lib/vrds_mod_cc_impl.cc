@@ -47,7 +47,7 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
     {
         srand(time(NULL));
-        two_symbol_scalar = sqrt(3.0/8.0);
+        two_symbol_scalar = sqrt(1.0/2.0);
         four_symbol_scalar = sqrt(1.0/6.0);
         set_output_multiple(2);
     }
