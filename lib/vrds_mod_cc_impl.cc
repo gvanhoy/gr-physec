@@ -48,7 +48,7 @@ namespace gr {
     {
         srand(time(NULL));
         two_symbol_scalar = sqrt(3.0)/2.0;
-        four_symbol_scalar = 2.0/11.0;
+        four_symbol_scalar = 2.0/sqrt(11.0);
         set_output_multiple(2);
     }
 
