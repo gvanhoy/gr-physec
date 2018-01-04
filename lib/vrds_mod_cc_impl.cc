@@ -25,6 +25,7 @@
 #include <gnuradio/io_signature.h>
 #include <cstdio>
 #include <ctime>
+#include <cmath>
 #include "vrds_mod_cc_impl.h"
 
 namespace gr {
@@ -46,6 +47,8 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
     {
         srand(time(NULL));
+        two_symbol_scalar = sqrt(3.0/8.0);
+        four_symbol_scalar = sqrt(1.0/5.0);
         set_output_multiple(2);
     }
 
@@ -90,8 +93,8 @@ namespace gr {
                                       in[num_items + 2] -
                                       in[num_items + 3];
                 for(unsigned int i = 0; i < 4; i++){
-                    out[num_items + i].real() /= 4.0;
-                    out[num_items + i].imag() /= 4.0;
+                    out[num_items + i].real() *= four_symbol_scalar;
+                    out[num_items + i].imag() *= four_symbol_scalar;
                 }
                 num_items += 4;
             }
@@ -103,8 +106,8 @@ namespace gr {
                 out[num_items] = in[num_items] + in[num_items + 1];
                 out[num_items + 1] = in[num_items] - in[num_items + 1];
                 for(unsigned int i = 0; i < 2; i++){
-                    out[num_items + i].real() /= 2.0;
-                    out[num_items + i].imag() /= 2.0;
+                    out[num_items + i].real() *= two_symbol_scalar;
+                    out[num_items + i].imag() *= two_symbol_scalar;
                 }
                 num_items += 2;
             }
