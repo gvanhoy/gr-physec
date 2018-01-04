@@ -26,6 +26,7 @@
 #include "vrds_demod_cc_impl.h"
 #include <vector>
 #include <iostream>
+#include <cmath>
 
 namespace gr {
   namespace physec {
@@ -45,6 +46,8 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
               gr::io_signature::make(1, 1, sizeof(gr_complex)))
     {
+        two_symbol_scalar = sqrt(2.0)/2.0;
+        four_symbol_scalar = 1/2.0;
         set_output_multiple(2);
     }
 
@@ -78,12 +81,20 @@ namespace gr {
         if(pmt::to_long(tags[i].value) == 2){
             out[idx] =      in[idx] + in[idx + 1];
             out[idx + 1] =  in[idx] - in[idx + 1];
+            for(unsigned int i = 0; i < 2; i++){
+                out[idx + i].real() *= two_symbol_scalar;
+                out[idx + i].imag() *= two_symbol_scalar;
+            }
         }
         else{
             out[idx] =      in[idx] + in[idx + 1] + in[idx + 2] + in[idx + 3];
             out[idx + 1] = -in[idx] + in[idx + 1] + in[idx + 2] - in[idx + 3];
             out[idx + 2] =  in[idx] + in[idx + 1] - in[idx + 2] - in[idx + 3];
             out[idx + 3] =  in[idx] - in[idx + 1] + in[idx + 2] - in[idx + 3];
+            for(unsigned int i = 0; i < 4; i++){
+                out[idx + i].real() *= four_symbol_scalar;
+                out[idx + i].imag() *= four_symbol_scalar;
+            }
         }
       }
 
